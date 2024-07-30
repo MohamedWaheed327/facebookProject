@@ -1,6 +1,6 @@
-from tkinter import *sgdsfgdsfgsgdfsgsdgfsgdsfgdsgf
+from tkinter import *
 
-# Create the main windowgsdfgdsgdsfgsdsdfgdsfgdsgdsgdsfg
+# Create the main windowg
 root = Tk()dfsgsdgfsgdsgdsgdsgdsgdfsgdgs
 root.geometry("400x300")s
 
