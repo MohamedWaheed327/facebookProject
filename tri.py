@@ -1,8 +1,8 @@
 from tkinter import *
 
 # Create the main windowg
-root = Tk()dfsgsdgfsgdsgdsgdsgdsgdfsgdgs
-root.geometry("400x300")s
+root = Tk()
+root.geometry("400x300")
 
 # Create a canvas widget
 canvas = Canvas(root)
