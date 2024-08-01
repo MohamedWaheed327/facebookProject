@@ -641,14 +641,9 @@ def editInfoWindow():
         verify_window.deiconify()
         editInfo_window.withdraw()
         
-    sign_up = Button(editInfo_window, text="OK", command=c1, bg="darkblue", fg="white", height=1, width=15, font=("Helvetica", 16))
-    sign_up.place(x=630 + 50, y=380)
+    ok = Button(editInfo_window, text="OK", command=c1, bg="darkblue", fg="white", height=1, width=15, font=("Helvetica", 16))
+    ok.place(x=600, y=380)
 
-    def c2():
-        start_window.deiconify()
-        editInfo_window.withdraw()
-    back = Button(editInfo_window, text="back", command=c2, bg="darkblue", fg="white", height=1, width=15, font=("Helvetica", 16))
-    back.place(x=530 - 50 - 40, y=380)
     return editInfo_window
 
 start_window = startWindow()
