@@ -3,7 +3,6 @@ from tkinter import *
 from tkinter.ttk import Combobox
 from PIL import Image, ImageTk
 # import mysql.connector
-# hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
 # my_dp = mysql.connector.connect(
 #     host="localhost",
 #     user="root",
