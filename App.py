@@ -2,6 +2,7 @@
 from tkinter import *
 from tkinter.ttk import Combobox
 from PIL import Image, ImageTk
+from PIL import Image, ImageTk, ImageDraw, ImageOps
 # import mysql.connector
 # my_dp = mysql.connector.connect(
 #     host="localhost",
@@ -133,6 +134,22 @@ def verifyWindow():
 
     return verify_window
 
+def make_circle(image_path):
+    # Open the input image as an image object
+    image = Image.open(image_path).convert("RGBA")
+
+    # Create a mask to create a circle
+    size = min(image.size)
+    mask = Image.new('L', (size, size), 0)
+    draw = ImageDraw.Draw(mask)
+    draw.ellipse((0, 0, size, size), fill=255)
+
+    # Resize the image to fit the mask
+    output = ImageOps.fit(image, (size, size))
+    output.putalpha(mask)
+
+    return output
+
 def profileWindow(Pstate):
     profile_window = get_window()
     profile_window.configure(bg="#F0F2F5")
@@ -165,49 +182,50 @@ def profileWindow(Pstate):
         # profile_window = profileWindow("Create post")
         profile_window.deiconify()
 
-    profileb = Button(frame, text="Profile", command=c1, bg="#0861F2", fg="white", height=1, width=31, font=("Helvetica", 16,'bold'))
-    profileb.grid(row=0, column=0, padx=0, pady=0)
+    profileb = Button(frame, text="Profile", command=c1, bg="#0861F2", fg="white", height=1, width=31, font=("Helvetica", 16, 'bold'))
+    profileb.grid(row=0, column=0, padx=5, pady=5)
 
     def c2():
         timeline_window.deiconify()
         profile_window.withdraw()
 
-    timelineb = Button(frame, text="Timeline", command=c2, bg="#0861F2", fg="white", height=1, width=31, font=("Helvetica", 16,'bold'))
-    timelineb.grid(row=0, column=1, padx=0, pady=0)
+    timelineb = Button(frame, text="Timeline", command=c2, bg="#0861F2", fg="white", height=1, width=31, font=("Helvetica", 16, 'bold'))
+    timelineb.grid(row=0, column=1, padx=5, pady=5)
 
     def c3():
         search_window.deiconify()
         profile_window.withdraw()
 
-    searchb = Button(frame, text="Search", command=c3, bg="#0861F2", fg="white", height=1, width=31, font=("Helvetica", 16,'bold'))
-    searchb.grid(row=0, column=2, padx=0, pady=0)
+    searchb = Button(frame, text="Search", command=c3, bg="#0861F2", fg="white", height=1, width=31, font=("Helvetica", 16, 'bold'))
+    searchb.grid(row=0, column=2, padx=5, pady=5)
 
     def c4():
         setting_window.deiconify()
         profile_window.withdraw()
 
-    settingsb = Button(frame, text="Settings", command=c4, bg="#0861F2", fg="white", height=1, width=31, font=("Helvetica", 16,'bold'))
-    settingsb.grid(row=0, column=3, padx=0, pady=0)
+    settingsb = Button(frame, text="Settings", command=c4, bg="#0861F2", fg="white", height=1, width=31, font=("Helvetica", 16, 'bold'))
+    settingsb.grid(row=0, column=3, padx=5, pady=5)
 
-    tk_image = ImageTk.PhotoImage(Image.open("res\\male_pic.png"), master=profile_window)
+    circular_image = make_circle("res\\male_pic.png")
+    tk_image = ImageTk.PhotoImage(circular_image, master=profile_window)
     pic = Label(frame, height=320, width=320, image=tk_image, bg="#F0F2F5")
     pic.image = tk_image
     pic.grid(row=1, column=0, pady=25, rowspan=4)
 
-    user = Label(frame, text="UserName", bg="#F0F2F5", fg="#1877F2", font=("Helvetica", 16,'bold'))
+    user = Label(frame, text="UserName", bg="#F0F2F5", fg="#1877F2", font=("Helvetica", 16, 'bold'))
     user.grid(row=5, column=0, padx=35, pady=20, sticky='w')
 
-    phone = Label(frame, text="Phone Number: 01061349348", bg="#F0F2F5", fg="#1877F2", font=("Helvetica", 16,'bold'))
-    phone.grid(row=1, column=1, padx=10, pady=0, sticky='ws')
+    phone = Label(frame, text="Phone Number: 01061349348", bg="#F0F2F5", fg="#1877F2", font=("Helvetica", 16, 'bold'))
+    phone.grid(row=1, column=1, padx=10, pady=5, sticky='ws')
 
-    gender = Label(frame, text="Gender: mohandes", bg="#F0F2F5", fg="#1877F2", font=("Helvetica", 16,'bold'))
-    gender.grid(row=2, column=1, padx=10, pady=0, sticky='ws')
+    gender = Label(frame, text="Gender: mohandes", bg="#F0F2F5", fg="#1877F2", font=("Helvetica", 16, 'bold'))
+    gender.grid(row=2, column=1, padx=10, pady=5, sticky='ws')
 
-    birthday = Label(frame, text="BirthDay: 16-12-2004", bg="#F0F2F5", fg="#1877F2", font=("Helvetica", 16,'bold'))
-    birthday.grid(row=3, column=1, padx=10, pady=0, sticky='ws')
+    birthday = Label(frame, text="BirthDay: 16-12-2004", bg="#F0F2F5", fg="#1877F2", font=("Helvetica", 16, 'bold'))
+    birthday.grid(row=3, column=1, padx=10, pady=5, sticky='ws')
 
-    education = Label(frame, text="Education: Bfci", bg="#F0F2F5", fg="#1877F2", font=("Helvetica", 16,'bold'))
-    education.grid(row=4, column=1, padx=10, pady=0, sticky='ws')
+    education = Label(frame, text="Education: Bfci", bg="#F0F2F5", fg="#1877F2", font=("Helvetica", 16, 'bold'))
+    education.grid(row=4, column=1, padx=10, pady=5, sticky='ws')
 
     follower = Combobox(frame)
     follower.grid(row=1, column=3, padx=10, pady=10, sticky='w')
@@ -220,27 +238,28 @@ def profileWindow(Pstate):
         profile_window.withdraw()
 
     create_post = Button(frame, text=Pstate, command=c5, bg="#0861F2", fg="white", height=1, width=20, font=("Helvetica", 16))
-    create_post.grid(row=6, column=0, padx=50, pady=0, sticky='nw', columnspan=2)
+    create_post.grid(row=6, column=0, padx=50, pady=20, sticky='nw', columnspan=2)
 
     for i in range(10):
-        usr = Label(frame, text="UserName . 7-29-2024", bg="#F0F2F5", fg="#1877F2", font=("Helvetica", 16,'bold'))
-        usr.grid(row=7 + i*3, column=0, padx=400, pady=0, sticky='w', columnspan=4)
+        usr = Label(frame, text="UserName . 7-29-2024", bg="#F0F2F5", fg="#1877F2", font=("Helvetica", 16, 'bold'))
+        usr.grid(row=7 + i*3, column=0, padx=10, pady=5, sticky='w', columnspan=4)
         post = Label(frame, text="first post!!", height=10, width=100, bg="lightgray")
-        post.grid(row=8 + i*3, column=0, padx=400, pady=0, sticky='w', columnspan=4)
+        post.grid(row=8 + i*3, column=0, padx=10, pady=5, sticky='w', columnspan=4)
         
-        love = Button(frame, text = "Love", bg = "#0861F2", fg = "white", height = 1, width = 15, font = ("Helvetica", 7))
+        love = Button(frame, text="Love", bg="#0861F2", fg="white", height=1, width=15, font=("Helvetica", 7))
         def change_color(e):
             if e.cget('bg') == 'red':
                 e.configure(bg='#F0F2F5')
             else:
                 e.configure(bg='red')
         love.configure(command=lambda e=love:  change_color(e))
-        love.grid(row=9 + i*3, column=0, padx=400, pady=0, sticky='w', columnspan=4)
+        love.grid(row=9 + i*3, column=0, padx=10, pady=5, sticky='w', columnspan=4)
         
-        react = Label(frame, text = "0", bg = "black", fg = "black", font = ("Helvetica", 7))
-        react.grid(row=9 + i*3, column=0, padx=500, pady=0, sticky='w', columnspan=4)
+        react = Label(frame, text="0", bg="black", fg="black", font=("Helvetica", 7))
+        react.grid(row=9 + i*3, column=0, padx=50, pady=5, sticky='w', columnspan=4)
 
-    return profile_window
+    return profile_window  
+
 
 def timelineWindow():
     timeline_window = get_window()
@@ -350,8 +369,8 @@ def postWindow():
     settingsb = Button(post_window, text="Settings", command=c4, bg="#0861F2", fg="white", height=1, width=31, font=("Helvetica", 16,'bold'))
     settingsb.grid(row=0, column=3, padx=0, pady=0)
 
-    posttb = Entry(post_window, font=("Helvetica", 16),width=90)
-    posttb.place(x=250, y=150)
+    posttb = Text(post_window, font=("Helvetica", 16),width=120,height=20)
+    posttb.place(x=150, y=150)
     
     postB = Button(post_window, text="post",bg="#0861F2",fg="white", font=("Helvetica", 16,'bold'))
     postB.place(x = 1200, y = 650)
@@ -616,17 +635,15 @@ def editInfoWindow():
 
     settingsb = Button(editInfo_window, text="Settings", command=c4, bg="#0861F2", fg="white", height=1, width=31, font=("Helvetica", 16))
     settingsb.grid(row=0, column=3, padx=0, pady=0)
-    welcome = Label(editInfo_window, text="facebook lite", bg="#F0F2F5", fg="#1877F2", font=("Helvetica", 20))
-    welcome.place(x=600, y=100)
     
-    username = Label(editInfo_window, text="username:", bg="#F0F2F5", fg="#1877F2", font=("Helvetica", 16))
-    username.place(x=500 - 100, y=150)
-    gmail = Label(editInfo_window, text="gmail:", bg="#F0F2F5", fg="#1877F2", font=("Helvetica", 16))
-    gmail.place(x=500 - 100, y=200)
-    password = Label(editInfo_window, text="password:", bg="#F0F2F5", fg="#1877F2", font=("Helvetica", 16))
-    password.place(x=500 - 100, y=250)
-    comfirm = Label(editInfo_window, text="confirm password:", bg="#F0F2F5", fg="#1877F2", font=("Helvetica", 16))
-    comfirm.place(x=500 - 100, y=300)
+    education = Label(editInfo_window, text="education:", bg="#F0F2F5", fg="#1877F2", font=("Helvetica", 16))
+    education.place(x=500 - 100, y=150)
+    gender = Label(editInfo_window, text="gender:", bg="#F0F2F5", fg="#1877F2", font=("Helvetica", 16))
+    gender.place(x=500 - 100, y=200)
+    phone = Label(editInfo_window, text="phone:", bg="#F0F2F5", fg="#1877F2", font=("Helvetica", 16))
+    phone.place(x=500 - 100, y=250)
+    birth = Label(editInfo_window, text="birthday:", bg="#F0F2F5", fg="#1877F2", font=("Helvetica", 16))
+    birth.place(x=500 - 100, y=300)
     
     usernametb = Entry(editInfo_window, font=("Helvetica", 16))
     usernametb.place(x=600, y=150)
@@ -642,15 +659,9 @@ def editInfoWindow():
         editInfo_window.withdraw()
         
     sign_up = Button(editInfo_window, text="Sign up", command=c1, bg="#0861F2", fg="white", height=1, width=15, font=("Helvetica", 16))
-    sign_up.place(x=630 + 50, y=380)
+    sign_up.place(x=620 , y=380)
 
-    def c2():
-        start_window.deiconify()
-        editInfo_window.withdraw()
-    back = Button(editInfo_window, text="back", command=c2, bg="#0861F2", fg="white", height=1, width=15, font=("Helvetica", 16))
-    back.place(x=530 - 50 - 40, y=380)
     return editInfo_window
-
 start_window = startWindow()
 login_window = loginWindow()
 register_window = registerWindow()
@@ -672,4 +683,3 @@ start_window.mainloop()
 
 # timeline_window.deiconify()
 # timeline_window.mainloop()
-
