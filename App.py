@@ -1,720 +1,829 @@
 from tkinter import *
+from tkinter import messagebox
 from tkinter.ttk import Combobox
 from PIL import Image, ImageTk
-import mysql.connector
-
-my_dp = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    passwd="root",
-    database="facebook"
-)
-cursor = my_dp.cursor()
+from tkinter import *
+from tkinter import messagebox
+from PIL import Image, ImageTk, ImageDraw, ImageOps
+import functions
+import shutil
 
 
-def get_window():
-    window = Tk()
-    window.title("facebook lite")
-    window.iconbitmap("res\\facebook_icon.ico")
-    screen_height = window.winfo_screenheight()
-    screen_width = window.winfo_screenwidth()
-    window.geometry(f"{screen_width - 10}x{screen_height - 80}+0+0")
-    window.minsize(500, 500)
-    # window.state("zoomed")
-    # window.geometry("{0}x{1}+0+0".format(window.winfo_screenwidth(), window.winfo_screenheight()))
-    window.withdraw()
-    return window
+signedin_gmail = ""
 
 
-def startWindow():
-    start_window = get_window()
-    start_window.configure(bg="darkblue")
-    welcome = Label(start_window, text="Welcome to facebook lite.", bg="darkblue", fg="white", font=("Helvetica", 20))
-    welcome.place(x=600 - 50, y=100)
+def upload_Image(window,path):
+    img = Image.open(path)
+    img = ImageTk.PhotoImage(img)
+    panel = Label(window, image = img)
+    panel.image = img
+    panel.pack(fill = "both",expand = True)
+    panel.place(x=0,y=0,relwidth=1,relheight=1)
 
-    def c1():
-        login_window.deiconify()
-        start_window.withdraw()
+class startWindow:
+    def destroy(self):
+        self.window.destroy()
 
-    sign_in = Button(start_window, command=c1, text="Sign in", bg="darkblue", fg="white", height=1, width=15,
-                     font=("Helvetica", 16))
-    sign_in.place(x=630, y=200)
+    def open(self):
+        self.window = functions.get_window()
+        self.fill()
 
-    def c2():
-        register_window.deiconify()
-        start_window.withdraw()
+    def fill(self):
+        self.window.configure(bg="#F0F2F5")
+        upload_Image(self.window,"res/wallpaperflarecom_wallpaper.jpg")
+        
+        welcome = Label(self.window,text="Welcome to Facebook Lite.", bg= "#7f98ce", fg="#1877F2", font=("Helvetica", 20, 'bold'))
+        welcome.place(x=600 - 50, y=100)
 
-    sign_up = Button(start_window, text="Sign up", command=c2, bg="darkblue", fg="white", height=1, width=15,
-                     font=("Helvetica", 16))
-    sign_up.place(x=630, y=250)
-    return start_window
+        def c1():
+            self.destroy()
+            login_window.open()
 
+        sign_in = Button(self.window, command=c1, text="Sign in", bg="#0861F2", fg="white", height=1, width=15, font=("Helvetica", 16,'bold'))
+        sign_in.place(x=630, y=200)
 
-def loginWindow():
-    login_window = get_window()
-    login_window.configure(bg="darkblue")
-    welcome = Label(login_window, text="facebook lite", bg="darkblue", fg="white", font=("Helvetica", 20))
-    welcome.place(x=600, y=100)
+        def c2():
+            self.destroy()
+            register_window.open()
 
-    username = Label(login_window, text="username:", bg="darkblue", fg="white", font=("Helvetica", 16))
-    username.place(x=500 - 50, y=150)
-    password = Label(login_window, text="password:", bg="darkblue", fg="white", font=("Helvetica", 16))
-    password.place(x=500 - 50, y=200)
-
-    usernametb = Entry(login_window, font=("Helvetica", 16))
-    usernametb.place(x=600 - 10, y=150)
-    passwordtb = Entry(login_window, font=("Helvetica", 16))
-    passwordtb.place(x=600 - 10, y=200)
-
-    def c1():
-        profile_window.deiconify()
-        login_window.withdraw()
-
-    sign_in = Button(login_window, text="Sign in", command=c1, bg="darkblue", fg="white", height=1, width=15,
-                     font=("Helvetica", 16))
-    sign_in.place(x=630 + 50, y=300)
-
-    def c2():
-        start_window.deiconify()
-        login_window.withdraw()
-
-    back = Button(login_window, text="back", command=c2, bg="darkblue", fg="white", height=1, width=15,
-                  font=("Helvetica", 16))
-    back.place(x=530 - 50, y=300)
-    return login_window
+        sign_up = Button(self.window, text="Sign up", command=c2, bg="green", fg="white", height=1, width=15, font=("Helvetica", 16,'bold'))
+        sign_up.place(x=630, y=250)
 
 
-def registerWindow():
-    register_window = get_window()
-    register_window.configure(bg="darkblue")
-    welcome = Label(register_window, text="facebook lite", bg="darkblue", fg="white", font=("Helvetica", 20))
-    welcome.place(x=600, y=100)
+class loginWindow:
+    def destroy(self):
+        self.window.destroy()
 
-    username = Label(register_window, text="username:", bg="darkblue", fg="white", font=("Helvetica", 16))
-    username.place(x=500 - 100, y=150)
-    gmail = Label(register_window, text="gmail:", bg="darkblue", fg="white", font=("Helvetica", 16))
-    gmail.place(x=500 - 100, y=200)
-    password = Label(register_window, text="password:", bg="darkblue", fg="white", font=("Helvetica", 16))
-    password.place(x=500 - 100, y=250)
-    comfirm = Label(register_window, text="confirm password:", bg="darkblue", fg="white", font=("Helvetica", 16))
-    comfirm.place(x=500 - 100, y=300)
+    def open(self):
+        self.window = functions.get_window()
+        self.fill()
 
-    usernametb = Entry(register_window, font=("Helvetica", 16))
-    usernametb.place(x=600, y=150)
-    gmailtb = Entry(register_window, font=("Helvetica", 16))
-    gmailtb.place(x=600, y=200)
-    passwordtb = Entry(register_window, font=("Helvetica", 16))
-    passwordtb.place(x=600, y=250)
-    confirmtb = Entry(register_window, font=("Helvetica", 16))
-    confirmtb.place(x=600, y=300)
+    def fill(self):
+        self.window.configure(bg="#F0F2F5")
+        upload_Image(self.window,"res/wallpaperflarecom_wallpaper.jpg")
+        
+        welcome = Label(self.window, text="Facebook Lite", bg="#7f98ce", fg="#1877F2", font=("Helvetica", 20,'bold'))
+        welcome.place(x=600, y=100)
 
-    def c1():
-        verify_window.deiconify()
-        register_window.withdraw()
+        Gmail = Label(self.window, text="Gmail:", bg="#7f9cd0", fg="#1877F2", font=("Helvetica", 16,'bold'))
+        Gmail.place(x=500 - 50, y=150)
+        password = Label(self.window, text="password:", bg="#849fd4", fg="#1877F2", font=("Helvetica", 16,'bold'))
+        password.place(x=500 - 50, y=200)
 
-    sign_up = Button(register_window, text="Sign up", command=c1, bg="darkblue", fg="white", height=1, width=15,
-                     font=("Helvetica", 16))
-    sign_up.place(x=630 + 50, y=380)
+        Gmailtb = Entry(self.window, font=("Helvetica", 16))
+        Gmailtb.place(x=600 - 10, y=150)
+        passwordtb = Entry(self.window, font=("Helvetica", 16), show='*')
+        passwordtb.place(x=600 - 10, y=200)
 
-    def c2():
-        start_window.deiconify()
-        register_window.withdraw()
+        def c1():
+                g = Gmailtb.get()
+                p = passwordtb.get()
+                # g = "waheed@gmail.com"
+                # p = "root"
+                if not len(g) or not len(p):
+                    messagebox.showerror("Error", "Please fill out all the fields.")
+                    return
+                if functions.sign_in(g, p):
+                    global signedin_gmail
+                    signedin_gmail = g
+                    self.destroy()
+                    profile_window.open(g)
+                else:
+                    messagebox.showerror("Error", "Either gmail or password is wrong.")
 
-    back = Button(register_window, text="back", command=c2, bg="darkblue", fg="white", height=1, width=15,
-                  font=("Helvetica", 16))
-    back.place(x=530 - 50 - 40, y=380)
-    return register_window
+        sign_in = Button(self.window, text="Sign in", command=c1, bg="#0861F2", fg="white", height=1, width=15, font=("Helvetica", 16,'bold'))
+        sign_in.place(x=630 + 50 + 10 +10, y=300 - 10 - 10)
 
+        def c2():
+            self.destroy()
+            start_window.open()
 
-def verifyWindow():
-    verify_window = get_window()
-    verify_window.configure(bg="darkblue")
+        back = Button(self.window, text="back", command=c2, bg="#0861F2", fg="white", height=1, width=15, font=("Helvetica", 16,'bold'))
+        back.place(x=530 - 50 -10, y=300 - 10 - 10)
 
-    verify = Label(verify_window, text="enter the verification code sent to your email:", bg="darkblue", fg="white",
-                   font=("Helvetica", 20))
-    verify.place(x=100, y=100)
+class registerWindow:
+    def destroy(self):
+        self.window.destroy()
 
-    verfytb = Entry(verify_window, font=("Helvetica", 16))
-    verfytb.place(x=700, y=100)
+    def open(self):
+        self.window = functions.get_window()
+        self.fill()
 
-    def c1():
-        profile_window.deiconify()
-        verify_window.withdraw()
+    def fill(self):
+        self.window.configure(bg="#F0F2F5")
+        upload_Image(self.window,"res/wallpaperflarecom_wallpaper.jpg")
+        welcome = Label(self.window, text="facebook lite", bg="#7f98ce", fg="#1877F2", font=("Helvetica", 20,'bold'))
+        welcome.place(x=600, y=100 - 40)
 
-    verifyb = Button(verify_window, text="verify", command=c1, bg="darkblue", fg="white", height=1, width=15,
-                     font=("Helvetica", 16))
-    verifyb.place(x=600, y=200)
+        username = Label(self.window, text="username:", bg="#7f9cd0", fg="#1877F2", font=("Helvetica", 16,'bold'))
+        username.place(x=500 - 100, y=150 - 40)
+        gmail = Label(self.window, text="gmail:", bg="#849fd4", fg="#1877F2", font=("Helvetica", 16,'bold'))
+        gmail.place(x=500 - 100, y=200 -40)
+        password = Label(self.window, text="password:", bg="#87a2d6", fg="#1877F2", font=("Helvetica", 16,'bold'))
+        password.place(x=500 - 100, y=250 -40)
+        comfirm = Label(self.window, text="confirm password:", bg="#88a3d8", fg="#1877F2", font=("Helvetica", 16,'bold'))
+        comfirm.place(x=500 - 100, y=300 -40)
 
-    return verify_window
+        usernametb = Entry(self.window, font=("Helvetica", 16))
+        usernametb.place(x=600, y=150 -40)
+        gmailtb = Entry(self.window, font=("Helvetica", 16))
+        gmailtb.place(x=600, y=200-40)
+        passwordtb = Entry(self.window, font=("Helvetica", 16), show='*')
+        passwordtb.place(x=600, y=250-40)
+        confirmtb = Entry(self.window, font=("Helvetica", 16), show='*')
+        confirmtb.place(x=600, y=300-40)
 
+        def c1():
+            g = gmailtb.get()
+            p = passwordtb.get()
+            u = usernametb.get()
+            if p != confirmtb.get():
+                messagebox.showerror("Error", "Please make sure password is the same as confirm password.")
+                return
+            if not (len(g) and len(p) and len(u)):
+                messagebox.showerror("Error", "Please fill out all the fields.")
+                return
+            if not functions.is_unique("users", "gmail", g):
+                messagebox.showerror("Error", "This gmail account was used before.")
+                return
+            global signedin_gmail
+            signedin_gmail = g
+            functions.sign_up(u,g,p)
+            self.destroy()
+            profile_window.open(g)
 
-def profileWindow(Pstate):
-    profile_window = get_window()
-    profile_window.configure(bg="darkblue")
+        sign_up = Button(self.window, text="Sign up", command=c1, bg="#0861F2", fg="white", height=1, width=15, font=("Helvetica", 16,'bold'))
+        sign_up.place(x=630 + 50, y=380 + 100)
 
-    # Create a canvas
-    canvas = Canvas(profile_window, bg="darkblue")
-    canvas.pack(side=LEFT, fill=BOTH, expand=True)
+        def c2():
+            self.destroy()
+            start_window.open()
+            
+        back = Button(self.window, text="back", command=c2, bg="#0861F2", fg="white", height=1, width=15, font=("Helvetica", 16,'bold'))
+        back.place(x=530 - 50 - 40, y=380 + 100)
 
-    # Add a scrollbar
-    scrollbar = Scrollbar(profile_window, orient=VERTICAL, command=canvas.yview)
-    scrollbar.pack(side=RIGHT, fill=Y)
+def make_circle(image_path):
+    # Open the input image as an image object
+    image = Image.open(image_path).convert("RGBA")
 
-    # Configure the canvas
-    canvas.configure(yscrollcommand=scrollbar.set)
-    canvas.bind('<Configure>', lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
+    # Create a mask to create a circle
+    size = min(image.size)
+    mask = Image.new('L', (size, size), 0)
+    draw = ImageDraw.Draw(mask)
+    draw.ellipse((0, 0, size, size), fill=255)
 
-    # Create a frame inside the canvas
-    frame = Frame(canvas, bg="darkblue")
-    canvas.create_window((0, 0), window=frame, anchor="nw")
+    # Resize the image to fit the mask
+    output = ImageOps.fit(image, (size, size))
+    output.putalpha(mask)
 
-    # Scroll function
-    def on_mousewheel(event):
-        canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
+    return output
 
-    # Bind the mouse wheel event to the scroll function
-    profile_window.bind_all("<MouseWheel>", on_mousewheel)
+class profileWindow:
+    def destroy(self):
+        self.window.destroy()
+        self.gmail = ""
 
-    def c1():
-        profile_window.withdraw()
-        # profile_window = profileWindow("Create post")
-        profile_window.deiconify()
+    def open(self, gmail):
+        self.window = functions.get_window()
+        self.gmail = gmail
+        self.fill()
 
-    profileb = Button(frame, text="Profile", command=c1, bg="darkblue", fg="white", height=1, width=31,
-                      font=("Helvetica", 16))
-    profileb.grid(row=0, column=0, padx=0, pady=0)
+    def fill(self):
+        self.window.configure(bg="#F0F2F5")
 
-    def c2():
-        timeline_window.deiconify()
-        profile_window.withdraw()
+        # Create a canvas
+        canvas = Canvas(self.window, bg="#F0F2F5")
+        canvas.pack(side=LEFT, fill=BOTH, expand=True)
 
-    timelineb = Button(frame, text="Timeline", command=c2, bg="darkblue", fg="white", height=1, width=31,
-                       font=("Helvetica", 16))
-    timelineb.grid(row=0, column=1, padx=0, pady=0)
+        # Add a scrollbar
+        scrollbar = Scrollbar(self.window, orient=VERTICAL, command=canvas.yview)
+        scrollbar.pack(side=RIGHT, fill=Y)
 
-    def c3():
-        search_window.deiconify()
-        profile_window.withdraw()
+        # Configure the canvas
+        canvas.configure(yscrollcommand=scrollbar.set)
+        canvas.bind('<Configure>', lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
 
-    searchb = Button(frame, text="Search", command=c3, bg="darkblue", fg="white", height=1, width=31,
-                     font=("Helvetica", 16))
-    searchb.grid(row=0, column=2, padx=0, pady=0)
+        # Create a frame inside the canvas
+        frame = Frame(canvas, bg="#F0F2F5")
+        canvas.create_window((0, 0), window=frame, anchor="nw")
 
-    def c4():
-        setting_window.deiconify()
-        profile_window.withdraw()
+        # Scroll function
+        def on_mousewheel(event):
+            canvas.yview_scroll(int(-1*(event.delta/120)), "units")
 
-    settingsb = Button(frame, text="Settings", command=c4, bg="darkblue", fg="white", height=1, width=31,
-                       font=("Helvetica", 16))
-    settingsb.grid(row=0, column=3, padx=0, pady=0)
+        # Bind the mouse wheel event to the scroll function
+        self.window.bind_all("<MouseWheel>", on_mousewheel)
 
-    tk_image = ImageTk.PhotoImage(Image.open("res\\male_pic.png"), master=profile_window)
-    pic = Label(frame, height=320, width=320, image=tk_image, bg="darkblue")
-    pic.image = tk_image
-    pic.grid(row=1, column=0, pady=25, rowspan=4)
+        def c1():
+            self.destroy()
+            self.open(signedin_gmail)
 
-    user = Label(frame, text="UserName", bg="darkblue", fg="white", font=("Helvetica", 16))
-    user.grid(row=5, column=0, padx=35, pady=20, sticky='w')
+        profileb = Button(frame, text="Profile", command=c1, bg="#0861F2", fg="white", height=1, width=31, font=("Helvetica", 16))
+        profileb.grid(row=0, column=0, padx=0, pady=0)
 
-    phone = Label(frame, text="Phone Number: 01061349348", bg="darkblue", fg="white", font=("Helvetica", 16))
-    phone.grid(row=1, column=1, padx=10, pady=0, sticky='ws')
+        def c2():
+            timeline_window.open()
+            self.destroy()
 
-    gender = Label(frame, text="Gender: mohandes", bg="darkblue", fg="white", font=("Helvetica", 16))
-    gender.grid(row=2, column=1, padx=10, pady=0, sticky='ws')
+        timelineb = Button(frame, text="Timeline", command=c2, bg="#0861F2", fg="white", height=1, width=31, font=("Helvetica", 16))
+        timelineb.grid(row=0, column=1, padx=0, pady=0)
 
-    birthday = Label(frame, text="BirthDay: 16-12-2004", bg="darkblue", fg="white", font=("Helvetica", 16))
-    birthday.grid(row=3, column=1, padx=10, pady=0, sticky='ws')
+        def c3():
+            search_window.open([])
+            self.destroy()
 
-    education = Label(frame, text="Education: Bfci", bg="darkblue", fg="white", font=("Helvetica", 16))
-    education.grid(row=4, column=1, padx=10, pady=0, sticky='ws')
+        searchb = Button(frame, text="Search", command=c3, bg="#0861F2", fg="white", height=1, width=31, font=("Helvetica", 16))
+        searchb.grid(row=0, column=2, padx=0, pady=0)
 
-    follower = Combobox(frame)
-    follower.grid(row=1, column=3, padx=10, pady=10, sticky='w')
+        def c4():
+            setting_window.open()
+            self.destroy()
 
-    following = Combobox(frame)
-    following.grid(row=1, column=2, padx=10, pady=10, sticky='w')
+        settingsb = Button(frame, text="Settings", command=c4, bg="#0861F2", fg="white", height=1, width=31, font=("Helvetica", 16))
+        settingsb.grid(row=0, column=3, padx=0, pady=0)
+        
+        img = make_circle(functions.get_profile_pic(self.gmail))
+        # img = Image.open(functions.get_profile_pic(self.gmail))
+        img = img.resize((320, 320),Image.Resampling.LANCZOS)
 
-    def c5():
-        post_window.deiconify()
-        profile_window.withdraw()
+        tk_image = ImageTk.PhotoImage(img, master=self.window)
+        pic = Label(frame, height=320, width=320, image=tk_image, bg="#F0F2F5")
+        pic.image = tk_image
+        pic.grid(row=1, column=0, pady=25, rowspan=4)
 
-    create_post = Button(frame, text=Pstate, command=c5, bg="darkblue", fg="white", height=1, width=20,
-                         font=("Helvetica", 16))
-    create_post.grid(row=6, column=0, padx=50, pady=0, sticky='nw', columnspan=2)
+        user = Label(frame, text=functions.get_username(self.gmail), bg="#F0F2F5", fg="#1877F2", font=("Helvetica", 20, 'bold'))
+        user.grid(row=5, column=0, padx=35 + 10 + 20 + 30 + 20, pady=20, sticky='w')
 
-    for i in range(10):
-        usr = Label(frame, text="UserName . 7-29-2024", bg="darkblue", fg="white", font=("Helvetica", 16))
-        usr.grid(row=7 + i * 3, column=0, padx=400, pady=0, sticky='w', columnspan=4)
-        post = Label(frame, text="first post!!", height=10, width=100, bg="lightgray")
-        post.grid(row=8 + i * 3, column=0, padx=400, pady=0, sticky='w', columnspan=4)
+        phone = Label(frame, text="Phone Number: " + functions.get_phone(self.gmail), bg="#F0F2F5", fg="#1877F2", font=("Helvetica", 16, 'bold'))
+        phone.grid(row=1, column=1, padx=10, pady=0, sticky='ws')
 
-        love = Button(frame, text="Love", bg="darkblue", fg="white", height=1, width=15, font=("Helvetica", 7))
+        gender = Label(frame, text="Gender: " + functions.get_gender(self.gmail), bg="#F0F2F5", fg="#1877F2", font=("Helvetica", 16, 'bold'))
+        gender.grid(row=2, column=1, padx=10, pady=0, sticky='ws')
 
-        def change_color(e):
-            if e.cget('bg') == 'red':
-                e.configure(bg='darkblue')
+        birthday = Label(frame, text="BirthDay: " + functions.get_birth(self.gmail), bg="#F0F2F5", fg="#1877F2", font=("Helvetica", 16, 'bold'))
+        birthday.grid(row=3, column=1, padx=10, pady=0, sticky='ws')
+
+        education = Label(frame, text="Education: " + functions.get_edu(self.gmail), bg="#F0F2F5", fg="#1877F2", font=("Helvetica", 16, 'bold'))
+        education.grid(row=4, column=1, padx=10, pady=0, sticky='ws')
+
+        follower = Label(frame, text="followers: " + str(len(functions.get_followers(self.gmail))), bg="#F0F2F5", fg="#1877F2", font=("Helvetica", 16, 'bold'))
+        follower.grid(row=1, column=3, padx=10, pady=10, sticky='ws')
+
+        following = Label(frame, text="following: " + str(len(functions.get_following(self.gmail))), bg="#F0F2F5", fg="#1877F2", font=("Helvetica", 16, 'bold'))
+        following.grid(row=2, column=3, padx=10, pady=10, sticky='w')
+
+        if self.gmail == signedin_gmail:
+            def c5():
+                post_window.open()
+                self.destroy()
+            create_post = Button(frame, text="Create Post", command=c5, bg="#0861F2", fg="white", height=1, width=20, font=("Helvetica", 16))
+            create_post.grid(row=6, column=0, padx=50, pady=0, sticky='nw', columnspan=2)
+        else:
+            t = ""
+            if functions.is_follow(signedin_gmail, self.gmail):
+                t = "Unfollow"
             else:
-                e.configure(bg='red')
+                t = "Follow"
 
-        love.configure(command=lambda e=love: change_color(e))
-        love.grid(row=9 + i * 3, column=0, padx=400, pady=0, sticky='w', columnspan=4)
+            follow = Button(frame, text=t, bg="#0861F2", fg="white", height=1, width=20, font=("Helvetica", 16))
 
-        react = Label(frame, text="0", bg="black", fg="white", font=("Helvetica", 7))
-        react.grid(row=9 + i * 3, column=0, padx=500, pady=0, sticky='w', columnspan=4)
+            def c11(f):
+                if not functions.is_follow(signedin_gmail, self.gmail):
+                    functions.follow(signedin_gmail, self.gmail)
+                    f.configure(text = "Unfollow")
+                else:
+                    functions.unfollow(signedin_gmail, self.gmail)
+                    f.configure(text="Follow")
 
-    return profile_window
+            follow.configure(command=lambda e=follow:  c11(e))
+            follow.grid(row=6, column=0, padx=50, pady=0, sticky='nw', columnspan=2)
+
+        posts = functions.get_posts(self.gmail)
+        for i in range(len(posts)):
+            usr = Label(frame, text=functions.get_username(posts[i][1]) + " . " + posts[i][2], bg="#F0F2F5", fg="#1877F2", font=("Helvetica", 16, 'bold'))
+            usr.grid(row=7 + i*4, column=0, padx=400, pady=(10, 0), sticky='w', columnspan=4)
+            
+            post = Label(frame, text=posts[i][3], height=10, width=100, bg="#B5D7F2", fg="black", font=("Helvetica", 9, 'bold'))
+            post.grid(row=8 + i*4, column=0, padx=400, pady=0, sticky='w', columnspan=4)
+            
+            t = 'red' if functions.is_react(signedin_gmail, posts[i][0]) else '#1877F2'
+            love = Button(frame, text='Love', bg=t, fg="white", height=1, width=15, font=("Helvetica", 7))
+            love.grid(row=9 + i*4, column=0, padx=400, pady=0, sticky='w', columnspan=4)
+            
+            react = Label(frame, text=str(posts[i][4]), bg="black", fg="white", font=("Helvetica", 7))
+            
+            def c12(e, id, r):
+                if functions.is_react(signedin_gmail, id):
+                    functions.unreact(signedin_gmail, id)
+                    e.configure(bg='#1877F2')
+                else:
+                    functions.react(signedin_gmail, id)
+                    e.configure(bg='red')
+                r.configure(text=str(functions.get_reacts(id)))
+            
+            love.configure(command=lambda e=love, id=posts[i][0], r=react: c12(e, id, r))
+            react.grid(row=9 + i*4, column=0, padx=500, pady=0, sticky='w', columnspan=4)
 
 
-def timelineWindow():
-    timeline_window = get_window()
-    timeline_window.configure(bg="darkblue")
+class timelineWindow:
+    def destroy(self):
+        self.window.destroy()
 
-    # Create a canvas
-    canvas = Canvas(timeline_window, bg="darkblue")
-    canvas.pack(side=LEFT, fill=BOTH, expand=True)
+    def open(self):
+        self.window = functions.get_window()
+        self.fill()
 
-    # Add a scrollbar
-    scrollbar = Scrollbar(timeline_window, orient=VERTICAL, command=canvas.yview)
-    scrollbar.pack(side=RIGHT, fill=Y)
+    def fill(self):
+        self.window.configure(bg="#F0F2F5")
 
-    # Configure the canvas
-    canvas.configure(yscrollcommand=scrollbar.set)
-    canvas.bind('<Configure>', lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
+        # Create a canvas
+        canvas = Canvas(self.window, bg="#F0F2F5")
+        canvas.pack(side=LEFT, fill=BOTH, expand=True)
 
-    # Create a frame inside the canvas
-    frame = Frame(canvas, bg="darkblue")
-    canvas.create_window((0, 0), window=frame, anchor="nw")
+        # Add a scrollbar
+        scrollbar = Scrollbar(self.window, orient=VERTICAL, command=canvas.yview)
+        scrollbar.pack(side=RIGHT, fill=Y)
 
-    # Scroll function
-    def on_mousewheel(event):
-        canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
+        # Configure the canvas
+        canvas.configure(yscrollcommand=scrollbar.set)
+        canvas.bind('<Configure>', lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
 
-    # Bind the mouse wheel event to the scroll function
-    timeline_window.bind_all("<MouseWheel>", on_mousewheel)
+        # Create a frame inside the canvas
+        frame = Frame(canvas, bg="#F0F2F5")
+        canvas.create_window((0, 0), window=frame, anchor="nw")
 
-    def c1():
-        # profile_window = profileWindow("Create post")
-        profile_window.deiconify()
-        timeline_window.withdraw()
+        # Scroll function
+        def on_mousewheel(event):
+            canvas.yview_scroll(int(-1*(event.delta/120)), "units")
 
-    profileb = Button(frame, text="Profile", command=c1, bg="darkblue", fg="white", height=1, width=31,
-                      font=("Helvetica", 16))
-    profileb.grid(row=0, column=0, padx=0, pady=0)
+        # Bind the mouse wheel event to the scroll function
+        self.window.bind_all("<MouseWheel>", on_mousewheel)
 
-    def c2():
-        timeline_window.withdraw()
-        timeline_window.deiconify()
+        def c1():
+            profile_window.open(signedin_gmail)
+            self.destroy()            
 
-    timelineb = Button(frame, text="Timeline", command=c2, bg="darkblue", fg="white", height=1, width=31,
-                       font=("Helvetica", 16))
-    timelineb.grid(row=0, column=1, padx=0, pady=0)
+        profileb = Button(frame, text="Profile", command=c1, bg="#0861F2", fg="white", height=1, width=31, font=("Helvetica", 16))
+        profileb.grid(row=0, column=0, padx=0, pady=0)
 
-    def c3():
-        search_window.deiconify()
-        timeline_window.withdraw()
+        def c2():
+            self.destroy()
+            self.open()
 
-    searchb = Button(frame, text="Search", command=c3, bg="darkblue", fg="white", height=1, width=31,
-                     font=("Helvetica", 16))
-    searchb.grid(row=0, column=2, padx=0, pady=0)
+        timelineb = Button(frame, text="Timeline", command=c2, bg="#0861F2", fg="white", height=1, width=31, font=("Helvetica", 16))
+        timelineb.grid(row=0, column=1, padx=0, pady=0)
 
-    def c4():
-        setting_window.deiconify()
-        timeline_window.withdraw()
+        def c3():
+            search_window.open([])
+            self.destroy()
 
-    settingsb = Button(frame, text="Settings", command=c4, bg="darkblue", fg="white", height=1, width=31,
-                       font=("Helvetica", 16))
-    settingsb.grid(row=0, column=3, padx=0, pady=0)
+        searchb = Button(frame, text="Search", command=c3, bg="#0861F2", fg="white", height=1, width=31, font=("Helvetica", 16))
+        searchb.grid(row=0, column=2, padx=0, pady=0)
 
-    for i in range(10):
-        usr = Label(frame, text="UserName . 7-29-2024", bg="darkblue", fg="white", font=("Helvetica", 16))
-        usr.grid(row=7 + i * 3, column=0, padx=400, pady=0, sticky='w', columnspan=4)
-        post = Label(frame, text="first post!!", height=10, width=100, bg="lightgray")
-        post.grid(row=8 + i * 3, column=0, padx=400, pady=0, sticky='w', columnspan=4)
+        def c4():
+            setting_window.open()
+            self.destroy()
 
-        love = Button(frame, text="Love", bg="darkblue", fg="white", height=1, width=15, font=("Helvetica", 7))
+        settingsb = Button(frame, text="Settings", command=c4, bg="#0861F2", fg="white", height=1, width=31, font=("Helvetica", 16))
+        settingsb.grid(row=0, column=3, padx=0, pady=0)
 
-        def change_color(e):
-            if e.cget('bg') == 'red':
-                e.configure(bg='darkblue')
+        posts = functions.create_timeline(signedin_gmail)
+        for i in range(len(posts)):
+            usr = Label(frame, text=functions.get_username(posts[i][1]) + " . " + posts[i][2], bg="#F0F2F5", fg="#1877F2", font=("Helvetica", 16, 'bold'))
+            usr.grid(row=7 + i*3, column=0, padx=400, pady=0, sticky='w', columnspan=4)
+            post = Label(frame, text=posts[i][3], height=10, width=100, bg="#B5D7F2", fg="black", font=("Helvetica", 9, 'bold'))
+            post.grid(row=8 + i*3, column=0, padx=400, pady=0, sticky='w', columnspan=4)
+            t = ""
+            if functions.is_react(signedin_gmail, posts[i][0]):
+                t = 'red'
             else:
-                e.configure(bg='red')
+                t = '#1877F2'
+            love = Button(frame, text='Love', bg=t, fg="white", height=1, width=15, font=("Helvetica", 7))
+            love.grid(row=9 + i*3, column=0, padx=400, pady=0, sticky='w', columnspan=4)
+            react = Label(frame, text=str(posts[i][4]), bg="black",fg="white", font=("Helvetica", 7))
+            
+            def c(e, id, r):
+                if functions.is_react(signedin_gmail, id):
+                    functions.unreact(signedin_gmail, id)
+                    e.configure(bg='#1877F2')
+                else:
+                    functions.react(signedin_gmail, id)
+                    e.configure(bg='red')
+                r.configure(text=str(functions.get_reacts(id)))
+            love.configure(command=lambda e=love, id = posts[i][0], r = react:  c(e, id, r))
+            react.grid(row=9 + i*3, column=0, padx=500, pady=0, sticky='w', columnspan=4)
+
+
+class postWindow:
+    def destroy(self):
+        self.window.destroy()
+
+    def open(self):
+        self.window = functions.get_window()
+        self.fill()
+
+    def fill(self):
+        self.window.configure(bg="#F0F2F5")
+
+        def c1():
+            profile_window.open(signedin_gmail)
+            self.destroy()
+
+        profileb = Button(self.window, text="Profile", command=c1, bg="#0861F2", fg="white", height=1, width=31, font=("Helvetica", 16))
+        profileb.grid(row=0, column=0, padx=0, pady=0)
+
+        def c2():
+            timeline_window.open()
+            self.destroy()
+
+        timelineb = Button(self.window, text="Timeline", command=c2, bg="#0861F2", fg="white", height=1, width=31, font=("Helvetica", 16))
+        timelineb.grid(row=0, column=1, padx=0, pady=0)
+
+        def c3():
+            search_window.open([])
+            self.destroy()
+
+        searchb = Button(self.window, text="Search", command=c3, bg="#0861F2", fg="white", height=1, width=31, font=("Helvetica", 16))
+        searchb.grid(row=0, column=2, padx=0, pady=0)
+
+        def c4():
+            setting_window.open()
+            self.destroy()
+
+        settingsb = Button(self.window, text="Settings", command=c4, bg="#0861F2", fg="white", height=1, width=31, font=("Helvetica", 16))
+        settingsb.grid(row=0, column=3, padx=0, pady=0)
+
+        posttb = Text(self.window, font=("Helvetica", 16), width=85,height=20)
+        posttb.place(x=250, y=150)
+        
+        def c5():
+            if len(posttb.get("1.0", "end-1c").strip()) == 0:
+                messagebox.showerror("Error", "Please type something before posting.")
+                return
+            functions.create_post(signedin_gmail, posttb.get("1.0", "end-1c").strip())
+            profile_window.open(signedin_gmail)
+            self.destroy()
+
+        postB = Button(self.window, command=c5, text="Post", bg="#0861F2",fg="white", font=("Helvetica", 16,'bold'))
+        postB.place(x=1200, y=650)
+
+class settingWindow:
+    def destroy(self):
+        self.window.destroy()
+
+    def open(self):
+        self.window = functions.get_window()
+        self.fill()
+
+    def fill(self):
+        self.window.configure(bg="#B5D7F2")
+
+        def c1():
+            profile_window.open(signedin_gmail)
+            self.destroy()
+
+        profileb = Button(self.window, text="Profile", command=c1, bg="#0861F2", fg="white", height=1, width=31, font=("Helvetica", 16))
+        profileb.grid(row=0, column=0, padx=0, pady=0)
+
+        def c2():
+            timeline_window.open()
+            self.destroy()
+
+        timelineb = Button(self.window, text="Timeline", command=c2, bg="#0861F2", fg="white", height=1, width=31, font=("Helvetica", 16))
+        timelineb.grid(row=0, column=1, padx=0, pady=0)
+
+        def c3():
+            search_window.open([])
+            self.destroy()
+
+        searchb = Button(self.window, text="Search", command=c3, bg="#0861F2", fg="white", height=1, width=31, font=("Helvetica", 16))
+        searchb.grid(row=0, column=2, padx=0, pady=0)
+
+        def c4():
+            self.destroy()
+            self.open()
 
-        love.configure(command=lambda e=love: change_color(e))
-        love.grid(row=9 + i * 3, column=0, padx=400, pady=0, sticky='w', columnspan=4)
-        react = Label(frame, text="0", bg="black", fg="white", font=("Helvetica", 7))
-        react.grid(row=9 + i * 3, column=0, padx=500, pady=0, sticky='w', columnspan=4)
+        settingsb = Button(self.window, text="Settings", command=c4, bg="#0861F2", fg="white", height=1, width=31, font=("Helvetica", 16))
+        settingsb.grid(row=0, column=3, padx=0, pady=0)
 
-    return timeline_window
+        def c5():
+            changeUsr_window.open()
+            self.destroy()
 
+        changeUser = Button(self.window, command=c5, text="Change username", bg="#0861F2",fg="white",width=31, font=("Helvetica", 16,'bold'))
+        changeUser.place(x=500, y=100)
 
-def postWindow():
-    post_window = get_window()
-    post_window.configure(bg="darkblue")
+        def c6():
+            changeImage_window.open()
+            self.destroy()
 
-    def c1():
-        # profile_window = profileWindow("Create post")
-        profile_window.deiconify()
-        post_window.withdraw()
+        changepi = Button(self.window,  command=c6, text="Change profile image", bg="#0861F2",fg="white",width=31, font=("Helvetica", 16,'bold'))
+        changepi.place(x=500, y=200)
 
-    profileb = Button(post_window, text="Profile", command=c1, bg="darkblue", fg="white", height=1, width=31,
-                      font=("Helvetica", 16))
-    profileb.grid(row=0, column=0, padx=0, pady=0)
+        def c7():
+            editInfo_window.open()
+            self.destroy()
+
+        editinfo = Button(self.window, command=c7, text="Edit profile info", bg="#0861F2",fg="white",width=31, font=("Helvetica", 16,'bold'))
+        editinfo.place(x=500, y=300)
+        
+        def c8():
+            response = messagebox.askyesno("Delete account permenantly", "Do you want to proceed?")
+            if response:
+                functions.delete_account(signedin_gmail)
+                start_window.open()
+                self.destroy()
 
-    def c2():
-        timeline_window.deiconify()
-        post_window.withdraw()
+        deleteaccount = Button(self.window, command=c8, text="Delete account", bg="#0861F2",fg="white",width=31, font=("Helvetica", 16,'bold'))
+        deleteaccount.place(x=500, y=400)
 
-    timelineb = Button(post_window, text="Timeline", command=c2, bg="darkblue", fg="white", height=1, width=31,
-                       font=("Helvetica", 16))
-    timelineb.grid(row=0, column=1, padx=0, pady=0)
+        def c9():
+            self.destroy()
+            start_window.open()
+            
+        logout = Button(self.window,command=c9, text="log out", bg="#0861F2",fg="white",width=31, font=("Helvetica", 16,'bold'))
+        logout.place(x=500, y=500)
 
-    def c3():
-        search_window.deiconify()
-        post_window.withdraw()
 
-    searchb = Button(post_window, text="Search", command=c3, bg="darkblue", fg="white", height=1, width=31,
-                     font=("Helvetica", 16))
-    searchb.grid(row=0, column=2, padx=0, pady=0)
+class searchWindow:
+    def destroy(self):
+        self.window.destroy()
 
-    def c4():
-        setting_window.deiconify()
-        post_window.withdraw()
+    def open(self, usersL):
+        self.window = functions.get_window()
+        self.fill(usersL)
 
-    settingsb = Button(post_window, text="Settings", command=c4, bg="darkblue", fg="white", height=1, width=31,
-                       font=("Helvetica", 16))
-    settingsb.grid(row=0, column=3, padx=0, pady=0)
+    def fill(self, usersL):
+        self.window.configure(bg="#B5D7F2")
 
-    posttb = Entry(post_window, font=("Helvetica", 16), width=90)
-    posttb.place(x=250, y=150)
+        # Create a canvas
+        canvas = Canvas(self.window, bg="#B5D7F2")
+        canvas.pack(side=LEFT, fill=BOTH, expand=True)
 
-    postB = Button(post_window, text="post", bg="darkblue", fg="white", font=("Helvetica", 16))
-    postB.place(x=1200, y=650)
-    return post_window
+        # Add a scrollbar
+        scrollbar = Scrollbar(
+            self.window, orient=VERTICAL, command=canvas.yview)
+        scrollbar.pack(side=RIGHT, fill=Y)
 
+        # Configure the canvas
+        canvas.configure(yscrollcommand=scrollbar.set)
+        canvas.bind('<Configure>', lambda e: canvas.configure(
+            scrollregion=canvas.bbox("all")))
 
-def settingWindow():
-    setting_window = get_window()
-    setting_window.configure(bg="darkblue")
+        # Create a frame inside the canvas
+        frame = Frame(canvas, bg="#B5D7F2")
+        canvas.create_window((0, 0), window=frame, anchor="nw")
 
-    def c1():
-        # profile_window = profileWindow("Create post")
-        profile_window.deiconify()
-        setting_window.withdraw()
+        # Scroll function
+        def on_mousewheel(event):
+            canvas.yview_scroll(int(-1*(event.delta/120)), "units")
 
-    profileb = Button(setting_window, text="Profile", command=c1, bg="darkblue", fg="white", height=1, width=31,
-                      font=("Helvetica", 16))
-    profileb.grid(row=0, column=0, padx=0, pady=0)
+        # Bind the mouse wheel event to the scroll function
+        self.window.bind_all("<MouseWheel>", on_mousewheel)
 
-    def c2():
-        timeline_window.deiconify()
-        setting_window.withdraw()
+        def c1():
+            profile_window.open(signedin_gmail)
+            self.destroy()
 
-    timelineb = Button(setting_window, text="Timeline", command=c2, bg="darkblue", fg="white", height=1, width=31,
-                       font=("Helvetica", 16))
-    timelineb.grid(row=0, column=1, padx=0, pady=0)
+        profileb = Button(frame, text="Profile", command=c1, bg="#0861F2", fg="white", height=1, width=31, font=("Helvetica", 16))
+        profileb.grid(row=0, column=0, padx=0, pady=0)
 
-    def c3():
-        search_window.deiconify()
-        setting_window.withdraw()
+        def c2():
+            timeline_window.open()
+            self.destroy()
 
-    searchb = Button(setting_window, text="Search", command=c3, bg="darkblue", fg="white", height=1, width=31,
-                     font=("Helvetica", 16))
-    searchb.grid(row=0, column=2, padx=0, pady=0)
+        timelineb = Button(frame, text="Timeline", command=c2, bg="#0861F2", fg="white", height=1, width=31, font=("Helvetica", 16))
+        timelineb.grid(row=0, column=1, padx=0, pady=0)
 
-    def c4():
-        setting_window.withdraw()
-        setting_window.deiconify()
+        def c3():
+            self.destroy()
+            self.open()
 
-    settingsb = Button(setting_window, text="Settings", command=c4, bg="darkblue", fg="white", height=1, width=31,
-                       font=("Helvetica", 16))
-    settingsb.grid(row=0, column=3, padx=0, pady=0)
+        searchb = Button(frame, text="Search", command=c3, bg="#0861F2", fg="white", height=1, width=31, font=("Helvetica", 16))
+        searchb.grid(row=0, column=2, padx=0, pady=0)
 
-    def c5():
-        changeUsr_window.deiconify()
-        setting_window.withdraw()
+        def c4():
+            setting_window.open()
+            self.destroy()
 
-    changeUser = Button(setting_window, command=c5, text="Change username", bg="darkblue", fg="white", width=31,
-                        font=("Helvetica", 16))
-    changeUser.place(x=500, y=100)
+        settingsb = Button(frame, text="Settings", command=c4, bg="#0861F2", fg="white", height=1, width=31, font=("Helvetica", 16))
+        settingsb.grid(row=0, column=3, padx=0, pady=0)
 
-    def c6():
-        changeImage_window.deiconify()
-        setting_window.withdraw()
+        posttb = Entry(frame, font=("Helvetica", 16), width=30)
+        posttb.grid(row=1, column=1, pady=50, sticky="se")
 
-    changepi = Button(setting_window, command=c6, text="Change profile image", bg="darkblue", fg="white", width=31,
-                      font=("Helvetica", 16))
-    changepi.place(x=500, y=200)
+        def c5():
+            usersL = functions.search(posttb.get())
+            self.destroy()
+            self.open(usersL)
 
-    def c7():
-        editInfo_window.deiconify()
-        setting_window.withdraw()
+        postB = Button(frame, command=c5, text="search", bg="#0861F2", fg="white", font=("Helvetica", 11, 'bold'))
+        postB.grid(row=1, column=2, pady=50, padx=10, sticky="sw")
+        for i in range(len(usersL)):
+            usr = Label(frame, text=usersL[i][1], bg="#B5D7F2", fg="#1877F2", font=("Helvetica", 16))
+            usr.grid(row=7 + i*2, column=0, padx=400, pady=0, sticky='w', columnspan=4)
+            profile = Button(frame, text="View profile", bg = "#0861F2", fg = "white", height = 1, width = 15, font = ("Helvetica", 7))
 
-    editinfo = Button(setting_window, command=c7, text="Edit profile info", bg="darkblue", fg="white", width=31,
-                      font=("Helvetica", 16))
-    editinfo.place(x=500, y=300)
+            def c(e, g):
+                profile_window.open(g)
+                self.destroy()
 
-    deleteaccount = Button(setting_window, text="Delete account", bg="darkblue", fg="white", width=31,
-                           font=("Helvetica", 16))
-    deleteaccount.place(x=500, y=400)
+            profile.configure(command=lambda e=profile, g=usersL[i][0]:  c(e, g))
+            profile.grid(row=7 + i*2, column=1, padx=400, pady=0, sticky='w', columnspan=4)
 
-    logout = Button(setting_window, text="log out", bg="darkblue", fg="white", width=31, font=("Helvetica", 16))
-    logout.place(x=500, y=500)
+class changeUsrWindow:
+    def destroy(self):
+        self.window.destroy()
 
-    return setting_window
-
-
-def searchWindow():
-    search_window = get_window()
-    search_window.configure(bg="darkblue")
-
-    # Create a canvas
-    canvas = Canvas(search_window, bg="darkblue")
-    canvas.pack(side=LEFT, fill=BOTH, expand=True)
-
-    # Add a scrollbar
-    scrollbar = Scrollbar(
-        search_window, orient=VERTICAL, command=canvas.yview)
-    scrollbar.pack(side=RIGHT, fill=Y)
-
-    # Configure the canvas
-    canvas.configure(yscrollcommand=scrollbar.set)
-    canvas.bind('<Configure>', lambda e: canvas.configure(
-        scrollregion=canvas.bbox("all")))
-
-    # Create a frame inside the canvas
-    frame = Frame(canvas, bg="darkblue")
-    canvas.create_window((0, 0), window=frame, anchor="nw")
-
-    # Scroll function
-    def on_mousewheel(event):
-        canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
-
-    # Bind the mouse wheel event to the scroll function
-    search_window.bind_all("<MouseWheel>", on_mousewheel)
-
-    def c1():
-        # profile_window = profileWindow("Create post")
-        profile_window.deiconify()
-        search_window.withdraw()
-
-    profileb = Button(frame, text="Profile", command=c1, bg="darkblue", fg="white", height=1, width=31,
-                      font=("Helvetica", 16))
-    profileb.grid(row=0, column=0, padx=0, pady=0)
-
-    def c2():
-        timeline_window.deiconify()
-        search_window.withdraw()
-
-    timelineb = Button(frame, text="Timeline", command=c2, bg="darkblue", fg="white", height=1, width=31,
-                       font=("Helvetica", 16))
-    timelineb.grid(row=0, column=1, padx=0, pady=0)
-
-    def c3():
-        search_window.withdraw()
-        search_window.deiconify()
-
-    searchb = Button(frame, text="Search", command=c3, bg="darkblue", fg="white", height=1, width=31,
-                     font=("Helvetica", 16))
-    searchb.grid(row=0, column=2, padx=0, pady=0)
-
-    def c4():
-        setting_window.deiconify()
-        search_window.withdraw()
-
-    settingsb = Button(frame, text="Settings", command=c4, bg="darkblue", fg="white", height=1, width=31,
-                       font=("Helvetica", 16))
-    settingsb.grid(row=0, column=3, padx=0, pady=0)
-
-    posttb = Entry(frame, font=("Helvetica", 16), width=30)
-    posttb.grid(row=1, column=1, pady=50, sticky="se")
-
-    def c5():
-        for i in range(30):
-            usr = Label(frame, text="UserName", bg="darkblue", fg="white", font=("Helvetica", 16))
-            usr.grid(row=7 + i * 2, column=0, padx=400, pady=0, sticky='w', columnspan=4)
-
-            profile = Button(frame, text="View profile", bg="darkblue", fg="white", height=1, width=15,
-                             font=("Helvetica", 7))
-
-            def c(e):
-                # profile_window = profileWindow("Follow")
-                profile_window.deiconify()
-                search_window.withdraw()
-
-            profile.configure(command=lambda e=profile: c(e))
-            profile.grid(row=7 + i * 2, column=1, padx=400, pady=0, sticky='w', columnspan=4)
-
-    postB = Button(frame, command=c5, text="search", bg="darkblue", fg="white", font=("Helvetica", 11))
-    postB.grid(row=1, column=2, pady=50, padx=10, sticky="sw")
-
-    return search_window
-
-
-def changeUsrWindow():
-    changeUsr_window = get_window()
-    changeUsr_window.configure(bg="darkblue")
-
-    def c1():
-        # profile_window = profileWindow("Create post")
-        profile_window.deiconify()
-        changeUsr_window.withdraw()
-
-    profileb = Button(changeUsr_window, text="Profile", command=c1, bg="darkblue", fg="white", height=1, width=31,
-                      font=("Helvetica", 16))
-    profileb.grid(row=0, column=0, padx=0, pady=0)
-
-    def c2():
-        timeline_window.deiconify()
-        changeUsr_window.withdraw()
-
-    timelineb = Button(changeUsr_window, text="Timeline", command=c2, bg="darkblue", fg="white", height=1, width=31,
-                       font=("Helvetica", 16))
-    timelineb.grid(row=0, column=1, padx=0, pady=0)
-
-    def c3():
-        search_window.deiconify()
-        changeUsr_window.withdraw()
-
-    searchb = Button(changeUsr_window, text="Search", command=c3, bg="darkblue", fg="white", height=1, width=31,
-                     font=("Helvetica", 16))
-    searchb.grid(row=0, column=2, padx=0, pady=0)
-
-    def c4():
-        setting_window.deiconify()
-        changeUsr_window.withdraw()
-
-    settingsb = Button(changeUsr_window, text="Settings", command=c4, bg="darkblue", fg="white", height=1, width=31,
-                       font=("Helvetica", 16))
-    settingsb.grid(row=0, column=3, padx=0, pady=0)
-
-    changeL = Label(changeUsr_window, text="New username:", bg="darkblue", fg="white", font=("Helvetica", 16))
-    changeL.place(x=200 + 200, y=150)
-
-    changetb = Entry(changeUsr_window, font=("Helvetica", 16))
-    changetb.place(x=350 + 200, y=150)
-
-    changeB = Button(changeUsr_window, text="Change username", bg="darkblue", fg="white", font=("Helvetica", 11))
-    changeB.place(x=600 + 200, y=150)
-    return changeUsr_window
-
-
-def changeImageWindow():
-    changeImage_window = get_window()
-    changeImage_window.configure(bg="darkblue")
-
-    def c1():
-        # profile_window = profileWindow("Create post")
-        profile_window.deiconify()
-        changeImage_window.withdraw()
-
-    profileb = Button(changeImage_window, text="Profile", command=c1, bg="darkblue", fg="white", height=1, width=31,
-                      font=("Helvetica", 16))
-    profileb.grid(row=0, column=0, padx=0, pady=0)
-
-    def c2():
-        timeline_window.deiconify()
-        changeImage_window.withdraw()
-
-    timelineb = Button(changeImage_window, text="Timeline", command=c2, bg="darkblue", fg="white", height=1, width=31,
-                       font=("Helvetica", 16))
-    timelineb.grid(row=0, column=1, padx=0, pady=0)
-
-    def c3():
-        search_window.deiconify()
-        changeImage_window.withdraw()
-
-    searchb = Button(changeImage_window, text="Search", command=c3, bg="darkblue", fg="white", height=1, width=31,
-                     font=("Helvetica", 16))
-    searchb.grid(row=0, column=2, padx=0, pady=0)
-
-    def c4():
-        setting_window.deiconify()
-        changeImage_window.withdraw()
-
-    settingsb = Button(changeImage_window, text="Settings", command=c4, bg="darkblue", fg="white", height=1, width=31,
-                       font=("Helvetica", 16))
-    settingsb.grid(row=0, column=3, padx=0, pady=0)
-
-    changeL = Label(changeImage_window, text="choose Image", bg="darkblue", fg="white", font=("Helvetica", 16))
-    changeL.place(x=200 + 200, y=150)
-
-    changetb = Button(changeImage_window, text="Choose", bg="darkblue", fg="white", font=("Helvetica", 11))
-    changetb.place(x=350 + 200, y=150)
-
-    changeB = Button(changeImage_window, text="Change", bg="darkblue", fg="white", font=("Helvetica", 11))
-    changeB.place(x=600 + 50, y=150)
-    return changeImage_window
-
-
-def editInfoWindow():
-    editInfo_window = get_window()
-    editInfo_window.configure(bg="darkblue")
-
-    def c1():
-        profile_window.deiconify()
-        editInfo_window.withdraw()
-
-    profileb = Button(editInfo_window, text="Profile", command=c1, bg="darkblue", fg="white", height=1, width=31,
-                      font=("Helvetica", 16))
-    profileb.grid(row=0, column=0, padx=0, pady=0)
-
-    def c2():
-        timeline_window.deiconify()
-        editInfo_window.withdraw()
-
-    timelineb = Button(editInfo_window, text="Timeline", command=c2, bg="darkblue", fg="white", height=1, width=31,
-                       font=("Helvetica", 16))
-    timelineb.grid(row=0, column=1, padx=0, pady=0)
-
-    def c3():
-        search_window.deiconify()
-        editInfo_window.withdraw()
-
-    searchb = Button(editInfo_window, text="Search", command=c3, bg="darkblue", fg="white", height=1, width=31,
-                     font=("Helvetica", 16))
-    searchb.grid(row=0, column=2, padx=0, pady=0)
-
-    def c4():
-        setting_window.deiconify()
-        editInfo_window.withdraw()
-
-    settingsb = Button(editInfo_window, text="Settings", command=c4, bg="darkblue", fg="white", height=1, width=31,
-                       font=("Helvetica", 16))
-    settingsb.grid(row=0, column=3, padx=0, pady=0)
-
-    edu = Label(editInfo_window, text="Education:", bg="darkblue", fg="white", font=("Helvetica", 16))
-    edu.place(x=500 - 100, y=150)
-    gender = Label(editInfo_window, text="Gender:", bg="darkblue", fg="white", font=("Helvetica", 16))
-    gender.place(x=500 - 100, y=200)
-    phone = Label(editInfo_window, text="phone:", bg="darkblue", fg="white", font=("Helvetica", 16))
-    phone.place(x=500 - 100, y=250)
-    birth = Label(editInfo_window, text="birth day:", bg="darkblue", fg="white", font=("Helvetica", 16))
-    birth.place(x=500 - 100, y=300)
-
-    edutb = Entry(editInfo_window, font=("Helvetica", 16))
-    edutb.place(x=600, y=150)
-    gendertb = Entry(editInfo_window, font=("Helvetica", 16))
-    gendertb.place(x=600, y=200)
-    phonetb = Entry(editInfo_window, font=("Helvetica", 16))
-    phonetb.place(x=600, y=250)
-    birthtb = Entry(editInfo_window, font=("Helvetica", 16))
-    birthtb.place(x=600, y=300)
-
-    def c1():
-        return None
-
-    ok = Button(editInfo_window, text="OK", command=c1, bg="darkblue", fg="white", height=1, width=15,
-                font=("Helvetica", 16))
-    ok.place(x=600, y=380)
-
-    return editInfo_window
-
+    def open(self):
+        self.window = functions.get_window()
+        self.fill()
+
+    def fill(self):
+        self.window.configure(bg="#B5D7F2")
+
+        def c1():
+            profile_window.open(signedin_gmail)
+            self.destroy()
+
+        profileb = Button(self.window, text="Profile", command=c1, bg="#0861F2", fg="white", height=1, width=31, font=("Helvetica", 16))
+        profileb.grid(row=0, column=0, padx=0, pady=0)
+
+        def c2():
+            timeline_window.open()
+            self.destroy()
+
+        timelineb = Button(self.window, text="Timeline", command=c2, bg="#0861F2", fg="white", height=1, width=31, font=("Helvetica", 16))
+        timelineb.grid(row=0, column=1, padx=0, pady=0)
+
+        def c3():
+            search_window.open([])
+            self.destroy()
+
+        searchb = Button(self.window, text="Search", command=c3, bg="#0861F2", fg="white", height=1, width=31, font=("Helvetica", 16))
+        searchb.grid(row=0, column=2, padx=0, pady=0)
+
+        def c4():
+            setting_window.open()
+            self.destroy()
+
+        settingsb = Button(self.window, text="Settings", command=c4, bg="#0861F2", fg="white", height=1, width=31, font=("Helvetica", 16))
+        settingsb.grid(row=0, column=3, padx=0, pady=0)
+
+        changeL = Label(self.window, text="New username:", bg="#B5D7F2",fg="#1877F2", font=("Helvetica", 16))
+        changeL.place(x=200 + 200, y=150)
+
+        changetb = Entry(self.window, font=("Helvetica", 16))
+        changetb.place(x=350 + 200, y=150)
+
+        def c5():
+            if len(changetb.get()) == 0:
+                messagebox.showerror("Error", "Please type the new username.")
+                return
+            functions.change_username(signedin_gmail, changetb.get())
+            messagebox.showinfo("", f"Your new username is {changetb.get()}.")
+            setting_window.open()
+            self.destroy()
+
+        changeB = Button(self.window, command=c5, text="Change username", bg="#0861F2",fg="white", font=("Helvetica", 11))
+        changeB.place(x=600 + 200, y=150)
+
+
+class changeImageWindow:
+    def destroy(self):
+        self.window.destroy()
+
+    def open(self):
+        self.window = functions.get_window()
+        self.path = ""
+        self.fill()
+
+    def fill(self):
+        self.window.configure(bg="#B5D7F2")
+
+        def c1():
+            profile_window.open(signedin_gmail)
+            self.destroy()
+
+        profileb = Button(self.window, text="Profile", command=c1, bg="#0861F2", fg="white", height=1, width=31, font=("Helvetica", 16))
+        profileb.grid(row=0, column=0, padx=0, pady=0)
+
+        def c2():
+            timeline_window.open()
+            self.destroy()
+
+        timelineb = Button(self.window, text="Timeline", command=c2, bg="#0861F2", fg="white", height=1, width=31, font=("Helvetica", 16))
+        timelineb.grid(row=0, column=1, padx=0, pady=0)
+
+        def c3():
+            search_window.open([])
+            self.destroy()
+
+        searchb = Button(self.window, text="Search", command=c3, bg="#0861F2", fg="white", height=1, width=31, font=("Helvetica", 16))
+        searchb.grid(row=0, column=2, padx=0, pady=0)
+
+        def c4():
+            setting_window.open()
+            self.destroy()
+
+        settingsb = Button(self.window, text="Settings", command=c4, bg="#0861F2", fg="white", height=1, width=31, font=("Helvetica", 16))
+        settingsb.grid(row=0, column=3, padx=0, pady=0)
+        
+        def c5():
+            self.path = functions.choose_profile_pic()
+        changetb = Button(self.window, command=c5, text="Select photo",width=15,height=2, bg="#0861F2",fg="white", font=("Helvetica", 11, 'bold'))
+        changetb.place(x=700, y=150 + 150)
+        
+        def c6():
+            dst_path = "res/"
+            self.path = self.path[::-1]
+            temp = ""
+            for i in self.path:
+                if i == "/":
+                    break
+                temp += i
+            temp = temp[::-1]
+            dst_path += temp
+            self.path = self.path[::-1]
+            shutil.copy(self.path, dst_path)
+            functions.change_profile_pic(signedin_gmail, dst_path)
+            self.destroy()
+            setting_window.open()
+
+        changeB = Button(self.window, command=c6, text="Change",width=15,height=2, bg="#0861F2",fg="white", font=("Helvetica", 11, 'bold'))
+        changeB.place(x=700, y=250 + 150)
+
+
+class editInfoWindow:
+    def destroy(self):
+        self.window.destroy()
+
+    def open(self):
+        self.window = functions.get_window()
+        self.fill()
+
+    def fill(self):
+        self.window.configure(bg="#B5D7F2")
+
+        def c1():
+            profile_window.open(signedin_gmail)
+            self.destroy()
+
+        profileb = Button(self.window, text="Profile", command=c1,bg="#0861F2", fg="white", height=1, width=31, font=("Helvetica", 16))
+        profileb.grid(row=0, column=0, padx=0, pady=0)
+
+        def c2():
+            timeline_window.open()
+            self.destroy()
+
+        timelineb = Button(self.window, text="Timeline", command=c2, bg="#0861F2", fg="white", height=1, width=31, font=("Helvetica", 16))
+        timelineb.grid(row=0, column=1, padx=0, pady=0)
+
+        def c3():
+            search_window.open([])
+            self.destroy()
+
+        searchb = Button(self.window, text="Search", command=c3, bg="#0861F2", fg="white", height=1, width=31, font=("Helvetica", 16))
+        searchb.grid(row=0, column=2, padx=0, pady=0)
+
+        def c4():
+            setting_window.open()
+            self.destroy()
+
+        settingsb = Button(self.window, text="Settings", command=c4, bg="#0861F2", fg="white", height=1, width=31, font=("Helvetica", 16))
+        settingsb.grid(row=0, column=3, padx=0, pady=0)
+
+        edu = Label(self.window, text="Education:", bg="#B5D7F2", fg="#1877F2", font=("Helvetica", 16))
+        edu.place(x=500 - 100, y=150)
+        gender = Label(self.window, text="Gender:",  bg="#B5D7F2", fg="#1877F2", font=("Helvetica", 16))
+        gender.place(x=500 - 100, y=200)
+        phone = Label(self.window, text="Phone:", bg="#B5D7F2", fg="#1877F2", font=("Helvetica", 16))
+        phone.place(x=500 - 100, y=250)
+        birth = Label(self.window, text="BirthDay:", bg="#B5D7F2", fg="#1877F2", font=("Helvetica", 16))
+        birth.place(x=500 - 100, y=300)
+
+        edutb = Entry(self.window, font=("Helvetica", 16))
+        edutb.place(x=600, y=150)
+        gendertb = Entry(self.window, font=("Helvetica", 16))
+        gendertb.place(x=600, y=200)
+        phonetb = Entry(self.window, font=("Helvetica", 16))
+        phonetb.place(x=600, y=250)
+        birthtb = Entry(self.window, font=("Helvetica", 16))
+        birthtb.place(x=600, y=300)
+
+        def c1():
+            print(edutb.get(), gendertb.get(), phonetb.get(), birthtb.get())
+            functions.edit_profile_info(signedin_gmail,edutb.get(),gendertb.get(), phonetb.get(), birthtb.get())
+            setting_window.open()
+            self.destroy()
+
+        ok = Button(self.window, text="OK", command=c1, bg="#0861F2", fg="white", height=1, width=15, font=("Helvetica", 16))
+        ok.place(x=600, y=380)
 
 start_window = startWindow()
 login_window = loginWindow()
 register_window = registerWindow()
-verify_window = verifyWindow()
-profile_window = profileWindow("Create post")
+profile_window = profileWindow()
 timeline_window = timelineWindow()
 post_window = postWindow()
 setting_window = settingWindow()
@@ -723,11 +832,5 @@ changeUsr_window = changeUsrWindow()
 changeImage_window = changeImageWindow()
 editInfo_window = editInfoWindow()
 
-start_window.deiconify()
-start_window.mainloop()
-
-# profile_window.deiconify()
-# profile_window.mainloop()
-
-# timeline_window.deiconify()
-# timeline_window.mainloop()
+start_window.open()
+mainloop()
