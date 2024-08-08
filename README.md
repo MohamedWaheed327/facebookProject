@@ -1,3 +1,5 @@
+run it in anaconda IDE
+
 1- uncomment the sql session and run it in mysql workbench
 
 2- install pillow library => pip install pillow
